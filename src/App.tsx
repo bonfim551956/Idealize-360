@@ -28,10 +28,17 @@ import Pipeline from "@/pages/talents/Pipeline";
 import EmployeesList from "@/pages/people/EmployeesList";
 import EmployeeProfile from "@/pages/people/EmployeeProfile";
 import Ranking from "@/pages/people/Ranking";
+import Evaluations from "@/pages/people/Evaluations";
+import Pdis from "@/pages/people/Pdis";
 
 // Academy
 import CoursesList from "@/pages/academy/CoursesList";
 import CoursePlayer from "@/pages/academy/CoursePlayer";
+import Certificates from "@/pages/academy/Certificates";
+
+// Units & Settings
+import UnitsList from "@/pages/units/UnitsList";
+import Settings from "@/pages/Settings";
 
 const queryClient = new QueryClient();
 
@@ -63,21 +70,21 @@ const App = () => (
             {/* People */}
             <Route path="/people/employees" element={<EmployeesList />} />
             <Route path="/people/employees/:id" element={<EmployeeProfile />} />
-            <Route path="/people/evaluations" element={<EmployeesList />} />
-            <Route path="/people/pdis" element={<EmployeesList />} />
+            <Route path="/people/evaluations" element={<Evaluations />} />
+            <Route path="/people/pdis" element={<Pdis />} />
             <Route path="/people/ranking" element={<Ranking />} />
-            
+
             {/* Academy */}
             <Route path="/academy/courses" element={<CoursesList />} />
             <Route path="/academy/courses/:id" element={<CoursePlayer />} />
             <Route path="/academy/progress" element={<CoursesList />} />
-            <Route path="/academy/certificates" element={<CoursesList />} />
-            
+            <Route path="/academy/certificates" element={<Certificates />} />
+
             {/* Units */}
-            <Route path="/units" element={<Dashboard />} />
-            
+            <Route path="/units" element={<UnitsList />} />
+
             {/* Settings */}
-            <Route path="/settings" element={<Dashboard />} />
+            <Route path="/settings" element={<Settings />} />
           </Route>
           </Route>
 
