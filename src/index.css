@@ -1,0 +1,221 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "@fontsource/plus-jakarta-sans/400.css";
+@import "@fontsource/plus-jakarta-sans/500.css";
+@import "@fontsource/plus-jakarta-sans/600.css";
+@import "@fontsource/plus-jakarta-sans/700.css";
+
+@layer base {
+  :root {
+    /* Idealize Brand Colors */
+    --background: 0 0% 98%;
+    --foreground: 220 20% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 10%;
+
+    /* Teal Primary - Brand Color */
+    --primary: 173 58% 39%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Light Teal Secondary */
+    --secondary: 173 40% 95%;
+    --secondary-foreground: 173 58% 30%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 10% 45%;
+
+    /* Accent Teal */
+    --accent: 173 50% 92%;
+    --accent-foreground: 173 58% 25%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Status Colors */
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    /* Pillar Colors */
+    --pillar-talents: 199 89% 48%;
+    --pillar-talents-foreground: 0 0% 100%;
+    --pillar-people: 142 76% 36%;
+    --pillar-people-foreground: 0 0% 100%;
+    --pillar-academy: 271 81% 56%;
+    --pillar-academy-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 173 58% 39%;
+
+    --radius: 0.75rem;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(173 58% 39%) 0%, hsl(173 58% 30%) 100%);
+    --gradient-talents: linear-gradient(135deg, hsl(199 89% 48%) 0%, hsl(199 89% 38%) 100%);
+    --gradient-people: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(142 76% 28%) 100%);
+    --gradient-academy: linear-gradient(135deg, hsl(271 81% 56%) 0%, hsl(271 81% 46%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(173 58% 39%) 0%, hsl(199 89% 48%) 50%, hsl(271 81% 56%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(220 20% 10% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(220 20% 10% / 0.1), 0 2px 4px -2px hsl(220 20% 10% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(220 20% 10% / 0.1), 0 4px 6px -4px hsl(220 20% 10% / 0.1);
+    --shadow-glow: 0 0 20px hsl(173 58% 39% / 0.3);
+
+    --sidebar-background: 220 20% 10%;
+    --sidebar-foreground: 220 14% 96%;
+    --sidebar-primary: 173 58% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 18%;
+    --sidebar-accent-foreground: 220 14% 96%;
+    --sidebar-border: 220 15% 20%;
+    --sidebar-ring: 173 58% 45%;
+  }
+
+  .dark {
+    --background: 220 20% 8%;
+    --foreground: 220 14% 96%;
+
+    --card: 220 20% 12%;
+    --card-foreground: 220 14% 96%;
+
+    --popover: 220 20% 12%;
+    --popover-foreground: 220 14% 96%;
+
+    --primary: 173 58% 45%;
+    --primary-foreground: 220 20% 10%;
+
+    --secondary: 220 15% 18%;
+    --secondary-foreground: 220 14% 96%;
+
+    --muted: 220 15% 18%;
+    --muted-foreground: 220 10% 60%;
+
+    --accent: 220 15% 20%;
+    --accent-foreground: 220 14% 96%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 20%;
+    --input: 220 15% 20%;
+    --ring: 173 58% 45%;
+
+    --sidebar-background: 220 20% 6%;
+    --sidebar-foreground: 220 14% 96%;
+    --sidebar-primary: 173 58% 45%;
+    --sidebar-primary-foreground: 220 20% 10%;
+    --sidebar-accent: 220 15% 12%;
+    --sidebar-accent-foreground: 220 14% 96%;
+    --sidebar-border: 220 15% 15%;
+    --sidebar-ring: 173 58% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-lg border border-border/50;
+  }
+
+  .stat-card {
+    @apply rounded-xl p-6 transition-all duration-300 hover:shadow-lg;
+  }
+
+  .pillar-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .kanban-column {
+    @apply bg-muted/50 rounded-xl p-4 min-h-[400px];
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200;
+  }
+
+  .progress-ring {
+    @apply transition-all duration-500 ease-out;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-hero);
+  }
+
+  .bg-gradient-primary {
+    background-image: var(--gradient-primary);
+  }
+
+  .bg-gradient-talents {
+    background-image: var(--gradient-talents);
+  }
+
+  .bg-gradient-people {
+    background-image: var(--gradient-people);
+  }
+
+  .bg-gradient-academy {
+    background-image: var(--gradient-academy);
+  }
+
+  .bg-gradient-hero {
+    background-image: var(--gradient-hero);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+}
