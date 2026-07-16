@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
   Plus,
@@ -33,15 +33,61 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { listJobs } from "@/lib/api/jobs";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { listJobs, deleteJob, type Job } from "@/lib/api/jobs";
+import { JobFormDialog } from "@/components/talents/JobFormDialog";
 
 export default function JobsList() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingJob, setEditingJob] = useState<Job | null>(null);
+  const [deletingJob, setDeletingJob] = useState<Job | null>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: jobs = [], isLoading } = useQuery({
     queryKey: ["jobs"],
     queryFn: listJobs,
   });
+
+  const refreshJobs = () =>
+    queryClient.invalidateQueries({ queryKey: ["jobs"] });
+
+  const openNewJob = () => {
+    setEditingJob(null);
+    setFormOpen(true);
+  };
+  const openEditJob = (job: Job) => {
+    setEditingJob(job);
+    setFormOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deletingJob) return;
+    try {
+      await deleteJob(deletingJob.id);
+      toast({ title: "Vaga excluída." });
+      refreshJobs();
+    } catch (err) {
+      toast({
+        title: "Erro ao excluir",
+        description: err instanceof Error ? err.message : "Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setDeletingJob(null);
+    }
+  };
 
   const filteredJobs = jobs.filter(
     (job) =>
@@ -63,7 +109,7 @@ export default function JobsList() {
             Gerencie as vagas abertas em todas as unidades
           </p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={openNewJob}>
           <Plus className="h-4 w-4" />
           Nova Vaga
         </Button>
@@ -216,16 +262,21 @@ export default function JobsList() {
                             Ver página pública
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <Eye className="mr-2 h-4 w-4" />
-                          Ver candidatos
+                        <DropdownMenuItem asChild>
+                          <Link to="/talents/candidates">
+                            <Eye className="mr-2 h-4 w-4" />
+                            Ver candidatos
+                          </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEditJob(job)}>
                           <Edit className="mr-2 h-4 w-4" />
                           Editar
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onClick={() => setDeletingJob(job)}
+                        >
                           <Trash2 className="mr-2 h-4 w-4" />
                           Excluir
                         </DropdownMenuItem>
@@ -238,6 +289,39 @@ export default function JobsList() {
           </Table>
         </CardContent>
       </Card>
+
+      {/* Diálogo de criar/editar vaga */}
+      <JobFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        job={editingJob}
+        onSaved={refreshJobs}
+      />
+
+      {/* Confirmação de exclusão */}
+      <AlertDialog
+        open={!!deletingJob}
+        onOpenChange={(open) => !open && setDeletingJob(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir vaga?</AlertDialogTitle>
+            <AlertDialogDescription>
+              A vaga "{deletingJob?.title}" será removida permanentemente. Esta
+              ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

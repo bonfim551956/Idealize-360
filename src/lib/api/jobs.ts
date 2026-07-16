@@ -74,3 +74,34 @@ export async function getJob(id: string): Promise<Job | null> {
   if (error) throw error;
   return data ? mapJob(data) : null;
 }
+
+// Dados aceitos ao criar/editar uma vaga.
+export interface JobInput {
+  title: string;
+  unit_id: string | null;
+  role_id: string | null;
+  description: string;
+  requirements: string[];
+  benefits: string[];
+  salary: string;
+  type: string;
+  status: string;
+}
+
+/** Cria uma nova vaga. */
+export async function createJob(input: JobInput): Promise<void> {
+  const { error } = await supabase.from("jobs").insert(input);
+  if (error) throw error;
+}
+
+/** Atualiza uma vaga existente. */
+export async function updateJob(id: string, input: JobInput): Promise<void> {
+  const { error } = await supabase.from("jobs").update(input).eq("id", id);
+  if (error) throw error;
+}
+
+/** Exclui uma vaga. */
+export async function deleteJob(id: string): Promise<void> {
+  const { error } = await supabase.from("jobs").delete().eq("id", id);
+  if (error) throw error;
+}
