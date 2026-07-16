@@ -40,21 +40,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { employees, units, roles, idealizeLevels } from "@/lib/mock-data";
+import { idealizeLevels } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { listEmployees } from "@/lib/api/employees";
+import { listUnits } from "@/lib/api/units";
+import { listRoles } from "@/lib/api/roles";
 
 export default function EmployeesList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [unitFilter, setUnitFilter] = useState<string>("all");
   const [roleFilter, setRoleFilter] = useState<string>("all");
 
+  const { data: employees = [], isLoading } = useQuery({
+    queryKey: ["employees"],
+    queryFn: listEmployees,
+  });
+  const { data: units = [] } = useQuery({ queryKey: ["units"], queryFn: listUnits });
+  const { data: roles = [] } = useQuery({ queryKey: ["roles"], queryFn: listRoles });
+
   const filteredEmployees = employees.filter((employee) => {
     const matchesSearch =
       employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       employee.email.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesUnit =
-      unitFilter === "all" || employee.unit.id === unitFilter;
+      unitFilter === "all" || employee.unit?.id === unitFilter;
     const matchesRole =
-      roleFilter === "all" || employee.role.id === roleFilter;
+      roleFilter === "all" || employee.role?.id === roleFilter;
     return matchesSearch && matchesUnit && matchesRole;
   });
 
@@ -137,6 +148,20 @@ export default function EmployeesList() {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {isLoading && (
+                <TableRow>
+                  <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">
+                    Carregando colaboradores...
+                  </TableCell>
+                </TableRow>
+              )}
+              {!isLoading && filteredEmployees.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">
+                    Nenhum colaborador encontrado.
+                  </TableCell>
+                </TableRow>
+              )}
               {filteredEmployees.map((employee, index) => {
                 const levelInfo = getLevelInfo(employee.idealizeLevel);
                 return (
@@ -168,13 +193,13 @@ export default function EmployeesList() {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium">{employee.role.name}</p>
+                        <p className="font-medium">{employee.role?.name ?? "—"}</p>
                         <p className="text-sm text-muted-foreground">
-                          {employee.role.department}
+                          {employee.role?.department ?? ""}
                         </p>
                       </div>
                     </TableCell>
-                    <TableCell>{employee.unit.name}</TableCell>
+                    <TableCell>{employee.unit?.name ?? "—"}</TableCell>
                     <TableCell>
                       <Badge variant="outline" className="font-mono">
                         {employee.idealizeLevel} - {levelInfo.name}

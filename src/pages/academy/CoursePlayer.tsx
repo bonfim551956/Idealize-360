@@ -18,7 +18,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { courses } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { getCourse } from "@/lib/api/courses";
 
 const lessons = [
   { id: "1", title: "Introdução ao curso", duration: "5:30", completed: true, type: "video" },
@@ -33,9 +34,21 @@ const lessons = [
 
 export default function CoursePlayer() {
   const { id } = useParams();
-  const course = courses.find((c) => c.id === id);
+  const { data: course, isLoading } = useQuery({
+    queryKey: ["course", id],
+    queryFn: () => getCourse(id as string),
+    enabled: !!id,
+  });
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentLesson, setCurrentLesson] = useState(lessons.find((l) => l.current) || lessons[0]);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   if (!course) {
     return (

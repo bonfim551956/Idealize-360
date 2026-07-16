@@ -22,11 +22,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { employees, discProfiles, temperaments, idealizeLevels, courses } from "@/lib/mock-data";
+import { discProfiles, temperaments, idealizeLevels, courses } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { getEmployee } from "@/lib/api/employees";
 
 export default function EmployeeProfile() {
   const { id } = useParams();
-  const employee = employees.find((e) => e.id === id);
+  const { data: employee, isLoading } = useQuery({
+    queryKey: ["employee", id],
+    queryFn: () => getEmployee(id as string),
+    enabled: !!id,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    );
+  }
 
   if (!employee) {
     return (
@@ -45,11 +59,11 @@ export default function EmployeeProfile() {
   const tempInfo = temperaments[employee.temperament as keyof typeof temperaments];
   const levelInfo = idealizeLevels[employee.idealizeLevel as keyof typeof idealizeLevels];
 
-  const hireDate = new Date(employee.hireDate);
+  const hireDate = employee.hireDate ? new Date(employee.hireDate) : null;
   const today = new Date();
-  const yearsOfService = Math.floor(
-    (today.getTime() - hireDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000)
-  );
+  const yearsOfService = hireDate
+    ? Math.floor((today.getTime() - hireDate.getTime()) / (365.25 * 24 * 60 * 60 * 1000))
+    : 0;
 
   return (
     <div className="space-y-6">
@@ -63,7 +77,7 @@ export default function EmployeeProfile() {
         </Link>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{employee.name}</h1>
-          <p className="text-muted-foreground">{employee.role.name}</p>
+          <p className="text-muted-foreground">{employee.role?.name}</p>
         </div>
       </div>
 
@@ -88,9 +102,9 @@ export default function EmployeeProfile() {
                     </AvatarFallback>
                   </Avatar>
                   <h2 className="mt-4 text-xl font-semibold">{employee.name}</h2>
-                  <p className="text-muted-foreground">{employee.role.name}</p>
+                  <p className="text-muted-foreground">{employee.role?.name}</p>
                   <Badge className="mt-2" variant="outline">
-                    {employee.role.department}
+                    {employee.role?.department}
                   </Badge>
                 </div>
 
@@ -103,7 +117,7 @@ export default function EmployeeProfile() {
                   </div>
                   <div className="flex items-center gap-3">
                     <MapPin className="h-5 w-5 text-muted-foreground" />
-                    <span className="text-sm">{employee.unit.name}</span>
+                    <span className="text-sm">{employee.unit?.name}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Calendar className="h-5 w-5 text-muted-foreground" />
@@ -364,7 +378,7 @@ export default function EmployeeProfile() {
                   <CardContent>
                     <div className="relative space-y-6 before:absolute before:left-[11px] before:top-2 before:h-[calc(100%-20px)] before:w-0.5 before:bg-border">
                       {[
-                        { date: "Dez 2024", event: "Promovido a " + employee.role.name, type: "promotion" },
+                        { date: "Dez 2024", event: "Promovido a " + employee.role?.name, type: "promotion" },
                         { date: "Out 2024", event: "Certificação em Técnicas de Vendas SPIN", type: "training" },
                         { date: "Set 2024", event: "Avaliação de desempenho: 92 pontos", type: "evaluation" },
                         { date: "Jun 2024", event: "Feedback positivo do gestor", type: "feedback" },

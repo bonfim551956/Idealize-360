@@ -22,7 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { courses } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { listCourses } from "@/lib/api/courses";
 
 const pillars = ["Todos", "Onboarding", "Vendas", "Técnico", "Cultura"];
 
@@ -30,6 +31,11 @@ export default function CoursesList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [pillarFilter, setPillarFilter] = useState("Todos");
   const [statusFilter, setStatusFilter] = useState("all");
+
+  const { data: courses = [], isLoading } = useQuery({
+    queryKey: ["courses"],
+    queryFn: listCourses,
+  });
 
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
@@ -209,7 +215,13 @@ export default function CoursesList() {
         ))}
       </div>
 
-      {filteredCourses.length === 0 && (
+      {isLoading && (
+        <div className="py-12 text-center text-muted-foreground">
+          Carregando cursos...
+        </div>
+      )}
+
+      {!isLoading && filteredCourses.length === 0 && (
         <div className="py-12 text-center">
           <BookOpen className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-semibold">Nenhum curso encontrado</h3>

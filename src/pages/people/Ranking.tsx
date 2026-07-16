@@ -5,24 +5,35 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { employees, units } from "@/lib/mock-data";
-
-const rankingEmployees = [...employees].sort((a, b) => b.performance - a.performance);
-
-const unitRanking = units.map((unit) => {
-  const unitEmployees = employees.filter((e) => e.unit.id === unit.id);
-  const avgPerformance =
-    unitEmployees.length > 0
-      ? Math.round(unitEmployees.reduce((acc, e) => acc + e.performance, 0) / unitEmployees.length)
-      : 0;
-  return {
-    ...unit,
-    avgPerformance,
-    employeeCount: unitEmployees.length,
-  };
-}).sort((a, b) => b.avgPerformance - a.avgPerformance);
+import { useQuery } from "@tanstack/react-query";
+import { listEmployees } from "@/lib/api/employees";
+import { listUnits } from "@/lib/api/units";
 
 export default function Ranking() {
+  const { data: employees = [] } = useQuery({
+    queryKey: ["employees"],
+    queryFn: listEmployees,
+  });
+  const { data: units = [] } = useQuery({ queryKey: ["units"], queryFn: listUnits });
+
+  const rankingEmployees = [...employees].sort(
+    (a, b) => b.performance - a.performance
+  );
+
+  const unitRanking = units
+    .map((unit) => {
+      const unitEmployees = employees.filter((e) => e.unit?.id === unit.id);
+      const avgPerformance =
+        unitEmployees.length > 0
+          ? Math.round(
+              unitEmployees.reduce((acc, e) => acc + e.performance, 0) /
+                unitEmployees.length
+            )
+          : 0;
+      return { ...unit, avgPerformance, employeeCount: unitEmployees.length };
+    })
+    .sort((a, b) => b.avgPerformance - a.avgPerformance);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -95,10 +106,10 @@ export default function Ranking() {
                       </div>
                       <h3 className="mt-4 text-lg font-semibold">{employee.name}</h3>
                       <p className="text-sm text-muted-foreground">
-                        {employee.role.name}
+                        {employee.role?.name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {employee.unit.name}
+                        {employee.unit?.name}
                       </p>
                       <div className="mt-4">
                         <div className="text-4xl font-bold text-primary">
@@ -146,7 +157,7 @@ export default function Ranking() {
                     <div className="flex-1">
                       <p className="font-medium">{employee.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {employee.role.name} • {employee.unit.name}
+                        {employee.role?.name} • {employee.unit?.name}
                       </p>
                     </div>
                     <div className="flex items-center gap-4">

@@ -14,7 +14,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { candidates, employees, courses, jobs, units } from "@/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { listEmployees } from "@/lib/api/employees";
+import { listCandidates } from "@/lib/api/candidates";
+import { listCourses } from "@/lib/api/courses";
+import { listJobs } from "@/lib/api/jobs";
+import { listUnits } from "@/lib/api/units";
 
 const container = {
   hidden: { opacity: 0 },
@@ -32,12 +37,19 @@ const item = {
 };
 
 export default function Dashboard() {
+  const { data: employees = [] } = useQuery({ queryKey: ["employees"], queryFn: listEmployees });
+  const { data: candidates = [] } = useQuery({ queryKey: ["candidates"], queryFn: listCandidates });
+  const { data: courses = [] } = useQuery({ queryKey: ["courses"], queryFn: listCourses });
+  const { data: jobs = [] } = useQuery({ queryKey: ["jobs"], queryFn: listJobs });
+  const { data: units = [] } = useQuery({ queryKey: ["units"], queryFn: listUnits });
+
   const totalEmployees = employees.length;
   const totalCandidates = candidates.length;
   const pendingInterviews = candidates.filter((c) => c.status === "interview").length;
-  const avgTrainingProgress = Math.round(
-    courses.reduce((acc, c) => acc + c.progress, 0) / courses.length
-  );
+  const avgTrainingProgress = courses.length
+    ? Math.round(courses.reduce((acc, c) => acc + c.progress, 0) / courses.length)
+    : 0;
+  const latestCandidate = candidates[0];
 
   return (
     <div className="space-y-6">
@@ -145,7 +157,7 @@ export default function Dashboard() {
                     <p className="text-sm text-muted-foreground">{unit.city}</p>
                   </div>
                   <Badge variant="secondary">
-                    {employees.filter((e) => e.unit.id === unit.id).length} colaboradores
+                    {employees.filter((e) => e.unit?.id === unit.id).length} colaboradores
                   </Badge>
                 </div>
               ))}
@@ -214,15 +226,17 @@ export default function Dashboard() {
                   </p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 rounded-lg bg-info/10 p-3">
-                <TrendingUp className="mt-0.5 h-5 w-5 text-info" />
-                <div>
-                  <p className="font-medium">Nova Candidatura</p>
-                  <p className="text-sm text-muted-foreground">
-                    Mariana Costa - Consultor de Vendas
-                  </p>
+              {latestCandidate && (
+                <div className="flex items-start gap-3 rounded-lg bg-info/10 p-3">
+                  <TrendingUp className="mt-0.5 h-5 w-5 text-info" />
+                  <div>
+                    <p className="font-medium">Nova Candidatura</p>
+                    <p className="text-sm text-muted-foreground">
+                      {latestCandidate.name} - {latestCandidate.jobTitle}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -262,7 +276,7 @@ export default function Dashboard() {
                     <div className="flex-1 overflow-hidden">
                       <p className="truncate font-medium">{employee.name}</p>
                       <p className="truncate text-sm text-muted-foreground">
-                        {employee.role.name}
+                        {employee.role?.name ?? ""}
                       </p>
                       <div className="mt-1 flex items-center gap-2">
                         <Progress value={employee.performance} className="h-1.5 flex-1" />
