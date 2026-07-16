@@ -70,7 +70,7 @@ export default function Login() {
               <span className="text-4xl font-bold">i</span>
             </div>
           </div>
-          <h1 className="text-4xl font-bold mb-4">Idealize 360º</h1>
+          <h1 className="font-serif text-5xl mb-4">Idealize 360º</h1>
           <p className="text-xl text-primary-foreground/80 max-w-md">
             Plataforma completa de gestão de talentos, pessoas e treinamentos
           </p>
@@ -106,7 +106,7 @@ export default function Login() {
                   <span className="text-2xl font-bold text-primary-foreground">i</span>
                 </div>
               </div>
-              <CardTitle className="text-2xl">Bem-vindo de volta</CardTitle>
+              <CardTitle className="font-serif text-3xl">Bem-vindo de volta</CardTitle>
               <CardDescription>
                 Entre com suas credenciais para acessar a plataforma
               </CardDescription>

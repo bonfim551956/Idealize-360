@@ -2,84 +2,89 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "@fontsource/plus-jakarta-sans/400.css";
-@import "@fontsource/plus-jakarta-sans/500.css";
-@import "@fontsource/plus-jakarta-sans/600.css";
-@import "@fontsource/plus-jakarta-sans/700.css";
+/* Fontes da marca (Manrope + Instrument Serif) carregadas via index.html */
 
 @layer base {
   :root {
-    /* Idealize Brand Colors */
-    --background: 0 0% 98%;
-    --foreground: 220 20% 10%;
+    /* ===== Identidade Óticas Idealize =====
+       Teal (marca)  #18ac9a  -> 173 76% 38%
+       Laranja (ação) #ed700a -> 27 92% 48%
+       Fundo warm     #fcfcfc                       */
+    --background: 0 0% 99%;
+    --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card-foreground: 0 0% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
+    --popover-foreground: 0 0% 10%;
 
-    /* Teal Primary - Brand Color */
-    --primary: 173 58% 39%;
+    /* Teal Primary - cor oficial da marca */
+    --primary: 173 76% 38%;
     --primary-foreground: 0 0% 100%;
 
-    /* Light Teal Secondary */
-    --secondary: 173 40% 95%;
-    --secondary-foreground: 173 58% 30%;
+    /* Secondary - teal bem claro */
+    --secondary: 173 45% 95%;
+    --secondary-foreground: 173 76% 28%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 30 20% 96%;
+    --muted-foreground: 0 0% 42%;
 
-    /* Accent Teal */
-    --accent: 173 50% 92%;
-    --accent-foreground: 173 58% 25%;
+    /* Accent - peach suave da marca */
+    --accent: 28 100% 95%;
+    --accent-foreground: 24 90% 35%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
+    /* Laranja da marca (ação/destaque) */
+    --brand-orange: 27 92% 48%;
+    --brand-orange-foreground: 0 0% 100%;
+
     /* Status Colors */
-    --success: 142 76% 36%;
+    --success: 160 70% 36%;
     --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
+    --warning: 27 92% 48%;
     --warning-foreground: 0 0% 100%;
-    --info: 199 89% 48%;
+    --info: 173 76% 38%;
     --info-foreground: 0 0% 100%;
 
-    /* Pillar Colors */
-    --pillar-talents: 199 89% 48%;
+    /* Pillar Colors — alinhados à marca (laranja / teal / âmbar) */
+    --pillar-talents: 27 92% 48%;
     --pillar-talents-foreground: 0 0% 100%;
-    --pillar-people: 142 76% 36%;
+    --pillar-people: 173 76% 38%;
     --pillar-people-foreground: 0 0% 100%;
-    --pillar-academy: 271 81% 56%;
+    --pillar-academy: 38 92% 50%;
     --pillar-academy-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 173 58% 39%;
+    --border: 173 15% 90%;
+    --input: 173 15% 90%;
+    --ring: 173 76% 38%;
 
-    --radius: 0.75rem;
+    --radius: 0.9rem;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(173 58% 39%) 0%, hsl(173 58% 30%) 100%);
-    --gradient-talents: linear-gradient(135deg, hsl(199 89% 48%) 0%, hsl(199 89% 38%) 100%);
-    --gradient-people: linear-gradient(135deg, hsl(142 76% 36%) 0%, hsl(142 76% 28%) 100%);
-    --gradient-academy: linear-gradient(135deg, hsl(271 81% 56%) 0%, hsl(271 81% 46%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(173 58% 39%) 0%, hsl(199 89% 48%) 50%, hsl(271 81% 56%) 100%);
+    /* Gradients — teal ↔ laranja (linguagem da marca) */
+    --gradient-primary: linear-gradient(135deg, hsl(173 76% 38%) 0%, hsl(173 76% 30%) 100%);
+    --gradient-talents: linear-gradient(135deg, hsl(27 92% 52%) 0%, hsl(24 90% 40%) 100%);
+    --gradient-people: linear-gradient(135deg, hsl(173 76% 40%) 0%, hsl(173 76% 30%) 100%);
+    --gradient-academy: linear-gradient(135deg, hsl(38 92% 52%) 0%, hsl(30 90% 44%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(173 76% 38%) 0%, hsl(180 60% 30%) 45%, hsl(27 92% 48%) 100%);
 
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(220 20% 10% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(220 20% 10% / 0.1), 0 2px 4px -2px hsl(220 20% 10% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(220 20% 10% / 0.1), 0 4px 6px -4px hsl(220 20% 10% / 0.1);
-    --shadow-glow: 0 0 20px hsl(173 58% 39% / 0.3);
+    --shadow-sm: 0 1px 2px 0 hsl(180 20% 10% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(180 20% 10% / 0.1), 0 2px 4px -2px hsl(180 20% 10% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(180 20% 10% / 0.1), 0 4px 6px -4px hsl(180 20% 10% / 0.1);
+    --shadow-glow: 0 0 20px hsl(173 76% 38% / 0.3);
 
-    --sidebar-background: 220 20% 10%;
-    --sidebar-foreground: 220 14% 96%;
-    --sidebar-primary: 173 58% 45%;
+    /* Sidebar — teal escuro elegante da marca */
+    --sidebar-background: 182 60% 12%;
+    --sidebar-foreground: 173 25% 88%;
+    --sidebar-primary: 173 66% 45%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 18%;
-    --sidebar-accent-foreground: 220 14% 96%;
-    --sidebar-border: 220 15% 20%;
-    --sidebar-ring: 173 58% 45%;
+    --sidebar-accent: 182 45% 18%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 182 40% 20%;
+    --sidebar-ring: 173 66% 45%;
   }
 
   .dark {
@@ -128,7 +133,7 @@
   }
 
   html {
-    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    font-family: "Manrope", system-ui, sans-serif;
   }
 
   body {
@@ -136,7 +141,16 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer utilities {
+  /* Títulos editoriais no estilo do site oficial */
+  .font-serif-brand {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
   }
 }
 
