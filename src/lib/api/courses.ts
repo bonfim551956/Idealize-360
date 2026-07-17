@@ -53,3 +53,28 @@ export async function getCourse(id: string): Promise<Course | null> {
   if (error) throw error;
   return data ? mapCourse(data) : null;
 }
+
+export interface CourseInput {
+  title: string;
+  description: string;
+  pillar: string;
+  target_role: string;
+  duration: string;
+  thumbnail: string;
+  mandatory: boolean;
+}
+
+export async function createCourse(input: CourseInput): Promise<void> {
+  const { error } = await supabase.from("courses").insert(input);
+  if (error) throw error;
+}
+
+export async function updateCourse(id: string, input: CourseInput): Promise<void> {
+  const { error } = await supabase.from("courses").update(input).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteCourse(id: string): Promise<void> {
+  const { error } = await supabase.from("courses").delete().eq("id", id);
+  if (error) throw error;
+}

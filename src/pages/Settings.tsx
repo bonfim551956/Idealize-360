@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { User, Shield, Mail, Info } from "lucide-react";
+import { Link } from "react-router-dom";
+import { User, Shield, Mail, Info, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -133,10 +134,14 @@ export default function Settings() {
               <span className="text-muted-foreground">Plataforma</span>
               <span className="font-medium">Idealize 360º</span>
             </div>
-            <p className="pt-2 text-muted-foreground">
-              Precisa de mais níveis de acesso ou permissões para a equipe? Em
-              breve teremos a gestão de usuários por aqui.
-            </p>
+            {(level === "admin" || level === "rh") && (
+              <Button variant="outline" className="mt-2 w-full gap-2" asChild>
+                <Link to="/settings/users">
+                  <Users className="h-4 w-4" />
+                  Gerenciar usuários & equipe
+                </Link>
+              </Button>
+            )}
           </CardContent>
         </Card>
       </div>

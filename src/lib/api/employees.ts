@@ -66,3 +66,37 @@ export async function getEmployee(id: string): Promise<Employee | null> {
   if (error) throw error;
   return data ? mapEmployee(data) : null;
 }
+
+export interface EmployeeInput {
+  name: string;
+  email: string | null;
+  role_id: string | null;
+  unit_id: string | null;
+  hire_date: string | null;
+  disc_profile: string | null;
+  temperament: string | null;
+  idealize_level: string;
+  performance: number;
+  trainings_completed: number;
+}
+
+export async function createEmployee(input: EmployeeInput): Promise<void> {
+  const avatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(
+    input.name || "novo"
+  )}`;
+  const { error } = await supabase.from("employees").insert({ ...input, avatar });
+  if (error) throw error;
+}
+
+export async function updateEmployee(
+  id: string,
+  input: EmployeeInput
+): Promise<void> {
+  const { error } = await supabase.from("employees").update(input).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteEmployee(id: string): Promise<void> {
+  const { error } = await supabase.from("employees").delete().eq("id", id);
+  if (error) throw error;
+}

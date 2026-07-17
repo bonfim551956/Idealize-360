@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -191,10 +191,10 @@ export default function Login() {
             </CardContent>
           </Card>
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            Problemas para acessar?{" "}
-            <a href="#" className="text-primary hover:underline">
-              Entre em contato com o RH
-            </a>
+            Ainda não tem conta?{" "}
+            <Link to="/signup" className="font-medium text-primary hover:underline">
+              Criar conta
+            </Link>
           </p>
         </motion.div>
       </div>

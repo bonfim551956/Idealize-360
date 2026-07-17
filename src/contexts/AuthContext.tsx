@@ -35,6 +35,11 @@ interface AuthContextValue {
   profile: Profile | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signUp: (
+    email: string,
+    password: string,
+    fullName: string
+  ) => Promise<{ error: string | null; needsConfirmation: boolean }>;
   signOut: () => Promise<void>;
 }
 
@@ -84,6 +89,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: error ? error.message : null };
   }
 
+  async function signUp(email: string, password: string, fullName: string) {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName } },
+    });
+    if (error) return { error: error.message, needsConfirmation: false };
+    // Se não houver sessão após o signUp, é porque exige confirmação por e-mail.
+    const needsConfirmation = !data.session;
+    return { error: null, needsConfirmation };
+  }
+
   async function signOut() {
     await supabase.auth.signOut();
     setProfile(null);
@@ -95,6 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     profile,
     loading,
     signIn,
+    signUp,
     signOut,
   };
 

@@ -10,6 +10,9 @@ import {
   TrendingUp,
   GraduationCap,
   MessageSquare,
+  Plus,
+  Edit,
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,16 +43,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
 import { idealizeLevels } from "@/lib/mock-data";
-import { useQuery } from "@tanstack/react-query";
-import { listEmployees } from "@/lib/api/employees";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { listEmployees, deleteEmployee, type Employee } from "@/lib/api/employees";
 import { listUnits } from "@/lib/api/units";
 import { listRoles } from "@/lib/api/roles";
+import { EmployeeFormDialog } from "@/components/people/EmployeeFormDialog";
 
 export default function EmployeesList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [unitFilter, setUnitFilter] = useState<string>("all");
   const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState<Employee | null>(null);
+  const [deleting, setDeleting] = useState<Employee | null>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: employees = [], isLoading } = useQuery({
     queryKey: ["employees"],
@@ -57,6 +77,27 @@ export default function EmployeesList() {
   });
   const { data: units = [] } = useQuery({ queryKey: ["units"], queryFn: listUnits });
   const { data: roles = [] } = useQuery({ queryKey: ["roles"], queryFn: listRoles });
+
+  const refresh = () => queryClient.invalidateQueries({ queryKey: ["employees"] });
+  const openNew = () => { setEditing(null); setFormOpen(true); };
+  const openEdit = (e: Employee) => { setEditing(e); setFormOpen(true); };
+
+  async function confirmDelete() {
+    if (!deleting) return;
+    try {
+      await deleteEmployee(deleting.id);
+      toast({ title: "Colaborador excluído." });
+      refresh();
+    } catch (err) {
+      toast({
+        title: "Erro ao excluir",
+        description: err instanceof Error ? err.message : "Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleting(null);
+    }
+  }
 
   const filteredEmployees = employees.filter((employee) => {
     const matchesSearch =
@@ -83,10 +124,16 @@ export default function EmployeesList() {
             Gerencie todos os colaboradores da rede Idealize
           </p>
         </div>
-        <Button variant="outline" className="gap-2">
-          <Download className="h-4 w-4" />
-          Exportar
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="outline" className="gap-2">
+            <Download className="h-4 w-4" />
+            Exportar
+          </Button>
+          <Button className="gap-2" onClick={openNew}>
+            <Plus className="h-4 w-4" />
+            Novo colaborador
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -242,13 +289,23 @@ export default function EmployeesList() {
                               Ver perfil completo
                             </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <MessageSquare className="mr-2 h-4 w-4" />
-                            Registrar feedback
+                          <DropdownMenuItem onClick={() => openEdit(employee)}>
+                            <Edit className="mr-2 h-4 w-4" />
+                            Editar
                           </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <TrendingUp className="mr-2 h-4 w-4" />
-                            Nova avaliação
+                          <DropdownMenuItem asChild>
+                            <Link to="/people/evaluations">
+                              <TrendingUp className="mr-2 h-4 w-4" />
+                              Nova avaliação
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            className="text-destructive"
+                            onClick={() => setDeleting(employee)}
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Excluir
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -260,6 +317,33 @@ export default function EmployeesList() {
           </Table>
         </CardContent>
       </Card>
+
+      <EmployeeFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        employee={editing}
+        onSaved={refresh}
+      />
+
+      <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir colaborador?</AlertDialogTitle>
+            <AlertDialogDescription>
+              "{deleting?.name}" será removido permanentemente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

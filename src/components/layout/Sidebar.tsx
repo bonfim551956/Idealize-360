@@ -1,5 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard,
   Users,
@@ -63,7 +64,16 @@ const navigation = [
 
 export function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { profile, signOut } = useAuth();
+  const canManageUsers =
+    profile?.access_level === "admin" || profile?.access_level === "rh";
   const [expandedItems, setExpandedItems] = useState<string[]>(["Banco de Talentos", "Pessoas & Cultura", "Academy"]);
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
   const toggleExpand = (name: string) => {
     setExpandedItems((prev) =>
@@ -164,6 +174,20 @@ export function Sidebar() {
 
         {/* Bottom section */}
         <div className="border-t border-sidebar-border p-3">
+          {canManageUsers && (
+            <Link
+              to="/settings/users"
+              className={cn(
+                "sidebar-link",
+                isActive("/settings/users")
+                  ? "bg-sidebar-accent text-sidebar-primary"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+              )}
+            >
+              <UserCircle className="h-5 w-5" />
+              <span className="text-sm font-medium">Usuários</span>
+            </Link>
+          )}
           <Link
             to="/settings"
             className="sidebar-link text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
@@ -171,7 +195,10 @@ export function Sidebar() {
             <Settings className="h-5 w-5" />
             <span className="text-sm font-medium">Configurações</span>
           </Link>
-          <button className="sidebar-link w-full text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-destructive">
+          <button
+            onClick={handleLogout}
+            className="sidebar-link w-full text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-destructive"
+          >
             <LogOut className="h-5 w-5" />
             <span className="text-sm font-medium">Sair</span>
           </button>

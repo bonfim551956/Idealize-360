@@ -9,6 +9,10 @@ import {
   BookOpen,
   CheckCircle,
   Star,
+  Plus,
+  MoreVertical,
+  Edit,
+  Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,8 +26,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useQuery } from "@tanstack/react-query";
-import { listCourses } from "@/lib/api/courses";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { listCourses, deleteCourse, type Course } from "@/lib/api/courses";
+import { CourseFormDialog } from "@/components/academy/CourseFormDialog";
 
 const pillars = ["Todos", "Onboarding", "Vendas", "Técnico", "Cultura"];
 
@@ -31,11 +53,37 @@ export default function CoursesList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [pillarFilter, setPillarFilter] = useState("Todos");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [formOpen, setFormOpen] = useState(false);
+  const [editing, setEditing] = useState<Course | null>(null);
+  const [deleting, setDeleting] = useState<Course | null>(null);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: courses = [], isLoading } = useQuery({
     queryKey: ["courses"],
     queryFn: listCourses,
   });
+
+  const refresh = () => queryClient.invalidateQueries({ queryKey: ["courses"] });
+  const openNew = () => { setEditing(null); setFormOpen(true); };
+  const openEdit = (c: Course) => { setEditing(c); setFormOpen(true); };
+
+  async function confirmDelete() {
+    if (!deleting) return;
+    try {
+      await deleteCourse(deleting.id);
+      toast({ title: "Curso excluído." });
+      refresh();
+    } catch (err) {
+      toast({
+        title: "Erro ao excluir",
+        description: err instanceof Error ? err.message : "Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleting(null);
+    }
+  }
 
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
@@ -64,15 +112,15 @@ export default function CoursesList() {
             Desenvolva suas habilidades com os cursos da Idealize Academy
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex items-center gap-3">
           <Badge variant="outline" className="gap-2 px-4 py-2">
             <CheckCircle className="h-4 w-4 text-success" />
             {completedCount} completos
           </Badge>
-          <Badge variant="outline" className="gap-2 px-4 py-2">
-            <Play className="h-4 w-4 text-info" />
-            {inProgressCount} em andamento
-          </Badge>
+          <Button className="gap-2" onClick={openNew}>
+            <Plus className="h-4 w-4" />
+            Novo curso
+          </Button>
         </div>
       </div>
 
@@ -162,9 +210,31 @@ export default function CoursesList() {
                 )}
               </div>
               <CardContent className="p-6">
-                <div className="mb-2 flex items-center gap-2">
-                  <Badge variant="outline">{course.pillar}</Badge>
-                  <Badge variant="secondary">{course.role}</Badge>
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">{course.pillar}</Badge>
+                    <Badge variant="secondary">{course.role}</Badge>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-7 w-7 -mr-1">
+                        <MoreVertical className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => openEdit(course)}>
+                        <Edit className="mr-2 h-4 w-4" />
+                        Editar
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-destructive"
+                        onClick={() => setDeleting(course)}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Excluir
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
                 <h3 className="text-lg font-semibold">{course.title}</h3>
                 <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
@@ -230,6 +300,33 @@ export default function CoursesList() {
           </p>
         </div>
       )}
+
+      <CourseFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        course={editing}
+        onSaved={refresh}
+      />
+
+      <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir curso?</AlertDialogTitle>
+            <AlertDialogDescription>
+              "{deleting?.title}" será removido permanentemente.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
