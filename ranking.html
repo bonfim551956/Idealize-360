@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ranking de Consultores · Óticas Idealize</title>
+<link rel="icon" type="image/png" href="https://oticasidealize.com/logo-light.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.2.0/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --teal: #1BA8A0;
+    --teal-dark: #0C3F3B;
+    --teal-hover: #178F88;
+    --teal-light: #E7F6F5;
+    --teal-bg: #F0FAF9;
+    --orange: #F59A2A;
+    --orange-light: #FEF3E4;
+    --gold: #FFB800;
+    --silver: #B8B8B8;
+    --bronze: #CD7F32;
+    --bg: #F7F9FA;
+    --surface: #FFFFFF;
+    --border: #E4E9EC;
+    --text: #1A2528;
+    --text-muted: #5A6870;
+    --text-light: #8B9599;
+    --success: #16A34A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Plus Jakarta Sans', 'DM Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 24px;
+  }
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .brand-logo-img {
+    height: 44px;
+    max-width: 180px;
+    object-fit: contain;
+  }
+  .brand-text {
+    padding-left: 14px;
+    border-left: 1px solid var(--border);
+  }
+  .brand-text h1 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--teal-dark);
+    letter-spacing: -0.2px;
+  }
+  .brand-text p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 2px 0 0 0;
+  }
+  .live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+  }
+  
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 100%);
+    color: white;
+    padding: 32px 24px;
+    text-align: center;
+  }
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .hero h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
+  }
+  .hero p {
+    font-size: 15px;
+    opacity: 0.9;
+    margin: 0;
+  }
+  
+  /* MAIN */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  
+  /* FILTERS */
+  .filters-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .filters-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .filters-row + .filters-row { margin-top: 10px; }
+  .filter-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-right: 4px;
+    min-width: 60px;
+  }
+  .filter-pill {
+    padding: 7px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    font-weight: 500;
+  }
+  .filter-pill:hover {
+    border-color: var(--teal);
+    color: var(--teal-dark);
+  }
+  .filter-pill.active {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+  }
+  .custom-box {
+    display: none;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: 8px;
+    margin-top: 10px;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .custom-box.show { display: flex; }
+  .input-date {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    background: var(--surface);
+  }
+  .btn-primary {
+    padding: 8px 14px;
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .btn-primary:hover { background: var(--teal-hover); }
+  
+  /* PERIOD INFO */
+  .period-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-left: 12px;
+  }
+  
+  /* KPIs */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .kpi-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 0 0 6px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    font-weight: 600;
+  }
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--teal-dark);
+    margin: 0;
+    letter-spacing: -0.5px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .kpi-hint {
+    font-size: 12px;
+    color: var(--text-light);
+    margin: 4px 0 0 0;
+  }
+  
+  /* PODIUM */
+  .podium {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+    align-items: end;
+  }
+  .podium-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+  }
+  .podium-card.pos-1 {
+    padding-top: 32px;
+    border-color: var(--gold);
+    background: linear-gradient(180deg, #FFFBEB 0%, var(--surface) 100%);
+  }
+  .podium-card.pos-2 {
+    background: linear-gradient(180deg, #F8F9FA 0%, var(--surface) 100%);
+  }
+  .podium-card.pos-3 {
+    background: linear-gradient(180deg, #FDF6EE 0%, var(--surface) 100%);
+  }
+  .podium-medal {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-weight: 700;
+    font-size: 18px;
+    color: white;
+  }
+  .podium-medal.pos-1 { background: var(--gold); font-size: 22px; }
+  .podium-medal.pos-2 { background: var(--silver); }
+  .podium-medal.pos-3 { background: var(--bronze); }
+  .podium-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--teal-dark);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.3px;
+  }
+  .podium-card.pos-1 .podium-name { font-size: 18px; }
+  .podium-loja {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0 0 12px 0;
+  }
+  .podium-total {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--teal);
+    line-height: 1;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .podium-card.pos-1 .podium-total { font-size: 40px; color: var(--gold); }
+  .podium-total-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  /* RANKING LIST */
+  .ranking-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .ranking-header {
+    padding: 16px 20px;
+    background: var(--teal-bg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .ranking-header h3 {
+    margin: 0;
+    font-size: 15px;
+    color: var(--teal-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+    transition: background 0.15s;
+  }
+  .ranking-item:last-child { border-bottom: none; }
+  .ranking-item:hover { background: var(--teal-bg); }
+  .ranking-position {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .ranking-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .ranking-name {
+    font-weight: 600;
+    color: var(--teal-dark);
+    font-size: 15px;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ranking-loja {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 2px 0 0 0;
+  }
+  .ranking-count {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--teal-dark);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .ranking-count-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    margin-left: 4px;
+  }
+  
+  /* EMPTY */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .empty .ti {
+    font-size: 48px;
+    color: var(--text-light);
+    margin-bottom: 12px;
+    display: block;
+  }
+  .empty h3 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+    color: var(--teal-dark);
+    font-weight: 600;
+  }
+  
+  .loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+  }
+  .spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--border);
+    border-top-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--text-light);
+  }
+  .footer strong { color: var(--teal); }
+  
+  @media (max-width: 640px) {
+    .hero h2 { font-size: 22px; }
+    .hero p { font-size: 13px; }
+    .podium { grid-template-columns: 1fr; }
+    .podium-card { padding: 16px; }
+    .brand-text { display: none; }
+    .header, .hero, .main { padding: 16px; }
+    .kpi-value { font-size: 22px; }
+    .podium-total { font-size: 26px; }
+    .podium-card.pos-1 .podium-total { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <img src="https://oticasidealize.com/logo-light.png" alt="Óticas Idealize" class="brand-logo-img">
+      <div class="brand-text">
+        <h1>Ranking de Consultores</h1>
+        <p>Menções em avaliações Google</p>
+      </div>
+    </div>
+    <div class="live-indicator">
+      <span class="live-dot"></span>
+      <span>Atualização automática</span>
+    </div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <h2>Quem está fazendo a diferença hoje?</h2>
+    <p>Ranking em tempo real das menções em avaliações 5 estrelas no Google</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  
+  <!-- FILTERS -->
+  <div class="filters-card">
+    <div class="filters-row">
+      <span class="filter-label">Período</span>
+      <button class="filter-pill active" data-periodo="hoje" onclick="filtrarPeriodo('hoje')">Hoje</button>
+      <button class="filter-pill" data-periodo="ontem" onclick="filtrarPeriodo('ontem')">Ontem</button>
+      <button class="filter-pill" data-periodo="semana" onclick="filtrarPeriodo('semana')">Esta semana</button>
+      <button class="filter-pill" data-periodo="mes" onclick="filtrarPeriodo('mes')">Este mês</button>
+      <button class="filter-pill" data-periodo="mes_passado" onclick="filtrarPeriodo('mes_passado')">Mês passado</button>
+      <button class="filter-pill" data-periodo="ano" onclick="filtrarPeriodo('ano')">Este ano</button>
+      <button class="filter-pill" data-periodo="tudo" onclick="filtrarPeriodo('tudo')">Tudo</button>
+      <button class="filter-pill" data-periodo="custom" onclick="abrirCustom()">Personalizado</button>
+      <span class="period-info" id="periodo-info"></span>
+    </div>
+    <div class="filters-row">
+      <span class="filter-label">Loja</span>
+      <button class="filter-pill active" data-loja="todas" onclick="filtrarLoja('todas')">Todas</button>
+      <button class="filter-pill" data-loja="sao_vicente" onclick="filtrarLoja('sao_vicente')">São Vicente</button>
+      <button class="filter-pill" data-loja="campinas" onclick="filtrarLoja('campinas')">Campinas</button>
+      <button class="filter-pill" data-loja="piracicaba" onclick="filtrarLoja('piracicaba')">Piracicaba</button>
+      <button class="filter-pill" data-loja="sorocaba" onclick="filtrarLoja('sorocaba')">Sorocaba</button>
+    </div>
+    <div class="custom-box" id="custom-box">
+      <span class="filter-label">De:</span>
+      <input type="date" class="input-date" id="data-ini">
+      <span class="filter-label">Até:</span>
+      <input type="date" class="input-date" id="data-fim">
+      <button class="btn-primary" onclick="aplicarCustom()"><i class="ti ti-check"></i> Aplicar</button>
+    </div>
+  </div>
+  
+  <!-- KPIs -->
+  <div id="kpis" class="kpi-grid">
+    <div class="loading"><span class="spinner"></span> Carregando...</div>
+  </div>
+  
+  <!-- PÓDIO -->
+  <div id="podio-wrap"></div>
+  
+  <!-- RANKING -->
+  <div class="ranking-card">
+    <div class="ranking-header">
+      <h3><i class="ti ti-trophy"></i> Ranking completo</h3>
+      <span id="rank-info" style="font-size:13px; color:var(--text-muted);"></span>
+    </div>
+    <div id="ranking-lista">
+      <div class="loading"><span class="spinner"></span> Carregando ranking...</div>
+    </div>
+  </div>
+  
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  Atualizado automaticamente a cada 60 segundos · Última atualização: <span id="ult-atualiz">agora</span>
+</div>
+
+<script>
+// =====================================================
+// CONFIG
+// =====================================================
+const SUPABASE_URL = 'https://zytgxvnadatttjpawqnn.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5dGd4dm5hZGF0dHRqcGF3cW5uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0OTU5MDEsImV4cCI6MjA5NTA3MTkwMX0.XF_IpdvAfg3gxo7iUS7SjT-PDF19Qv5T0xNOMJgc4A8';
+
+const LOJAS = {
+  sao_vicente: 'São Vicente',
+  campinas: 'Campinas',
+  piracicaba: 'Piracicaba',
+  sorocaba: 'Sorocaba'
+};
+
+let filtroPeriodo = 'hoje';
+let filtroLoja = 'todas';
+let filtroCustom = { ini: null, fim: null };
+
+// =====================================================
+// HELPERS
+// =====================================================
+async function sb(path) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`
+    }
+  });
+  if (!res.ok) throw new Error(`${res.status}`);
+  return await res.json();
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// =====================================================
+// FILTROS
+// =====================================================
+function filtrarPeriodo(p) {
+  filtroPeriodo = p;
+  document.querySelectorAll('[data-periodo]').forEach(el => {
+    el.classList.toggle('active', el.dataset.periodo === p);
+  });
+  if (p !== 'custom') {
+    document.getElementById('custom-box').classList.remove('show');
+    carregar();
+  }
+}
+
+function filtrarLoja(l) {
+  filtroLoja = l;
+  document.querySelectorAll('[data-loja]').forEach(el => {
+    el.classList.toggle('active', el.dataset.loja === l);
+  });
+  carregar();
+}
+
+function abrirCustom() {
+  const box = document.getElementById('custom-box');
+  box.classList.add('show');
+  const hoje = new Date();
+  const primeiroDia = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+  document.getElementById('data-ini').value = primeiroDia.toISOString().split('T')[0];
+  document.getElementById('data-fim').value = hoje.toISOString().split('T')[0];
+}
+
+function aplicarCustom() {
+  const ini = document.getElementById('data-ini').value;
+  const fim = document.getElementById('data-fim').value;
+  if (!ini || !fim) { alert('Escolha as duas datas'); return; }
+  filtroPeriodo = 'custom';
+  filtroCustom = { ini, fim };
+  document.querySelectorAll('[data-periodo]').forEach(el => {
+    el.classList.toggle('active', el.dataset.periodo === 'custom');
+  });
+  carregar();
+}
+
+function calcularPeriodo() {
+  const hoje = new Date();
+  hoje.setHours(23, 59, 59, 999);
+  let ini, fim = hoje, label = '';
+  
+  switch (filtroPeriodo) {
+    case 'hoje': {
+      ini = new Date(hoje); ini.setHours(0,0,0,0);
+      label = ini.toLocaleDateString('pt-BR');
+      break;
+    }
+    case 'ontem': {
+      ini = new Date(hoje); ini.setDate(ini.getDate() - 1); ini.setHours(0,0,0,0);
+      fim = new Date(hoje); fim.setDate(fim.getDate() - 1); fim.setHours(23,59,59,999);
+      label = ini.toLocaleDateString('pt-BR');
+      break;
+    }
+    case 'semana': {
+      ini = new Date(hoje);
+      const diaSemana = ini.getDay(); // 0=domingo
+      ini.setDate(ini.getDate() - diaSemana);
+      ini.setHours(0,0,0,0);
+      label = `${ini.toLocaleDateString('pt-BR')} até ${hoje.toLocaleDateString('pt-BR')}`;
+      break;
+    }
+    case 'mes': {
+      ini = new Date(hoje.getFullYear(), hoje.getMonth(), 1);
+      ini.setHours(0,0,0,0);
+      label = `${ini.toLocaleDateString('pt-BR')} até ${hoje.toLocaleDateString('pt-BR')}`;
+      break;
+    }
+    case 'mes_passado': {
+      ini = new Date(hoje.getFullYear(), hoje.getMonth() - 1, 1);
+      ini.setHours(0,0,0,0);
+      fim = new Date(hoje.getFullYear(), hoje.getMonth(), 0, 23, 59, 59, 999);
+      label = `${ini.toLocaleDateString('pt-BR')} até ${fim.toLocaleDateString('pt-BR')}`;
+      break;
+    }
+    case 'ano': {
+      ini = new Date(hoje.getFullYear(), 0, 1);
+      ini.setHours(0,0,0,0);
+      label = `Ano de ${hoje.getFullYear()}`;
+      break;
+    }
+    case 'custom': {
+      if (filtroCustom.ini && filtroCustom.fim) {
+        ini = new Date(filtroCustom.ini + 'T00:00:00');
+        fim = new Date(filtroCustom.fim + 'T23:59:59');
+        label = `${ini.toLocaleDateString('pt-BR')} até ${fim.toLocaleDateString('pt-BR')}`;
+      }
+      break;
+    }
+    default:
+      ini = null; fim = null;
+      label = 'Todo o período';
+  }
+  return { ini, fim, label };
+}
+
+// =====================================================
+// CARREGAR RANKING
+// =====================================================
+async function carregar() {
+  try {
+    const periodo = calcularPeriodo();
+    document.getElementById('periodo-info').textContent = periodo.label;
+    
+    let q = 'avaliacoes?select=consultor_detectado,loja,data_avaliacao,cliente_nome&estrelas=eq.5&consultor_detectado=not.is.null';
+    if (filtroLoja !== 'todas') q += `&loja=eq.${filtroLoja}`;
+    if (periodo.ini) q += `&data_avaliacao=gte.${periodo.ini.toISOString()}`;
+    if (periodo.fim) q += `&data_avaliacao=lte.${periodo.fim.toISOString()}`;
+    q += '&limit=5000';
+    
+    const dados = await sb(q);
+    
+    // Total geral no período
+    let qTotal = 'avaliacoes?select=id&estrelas=eq.5';
+    if (filtroLoja !== 'todas') qTotal += `&loja=eq.${filtroLoja}`;
+    if (periodo.ini) qTotal += `&data_avaliacao=gte.${periodo.ini.toISOString()}`;
+    if (periodo.fim) qTotal += `&data_avaliacao=lte.${periodo.fim.toISOString()}`;
+    const totalGeral = await sb(qTotal + '&limit=5000');
+    
+    // Agrega ranking
+    const contagem = {};
+    dados.forEach(d => {
+      const chave = `${d.consultor_detectado}|${d.loja}`;
+      contagem[chave] = (contagem[chave] || 0) + 1;
+    });
+    
+    const rank = Object.entries(contagem)
+      .map(([k, v]) => {
+        const [nome, loja] = k.split('|');
+        return { nome, loja, total: v };
+      })
+      .sort((a, b) => b.total - a.total);
+    
+    // KPIs
+    document.getElementById('kpis').innerHTML = `
+      <div class="kpi">
+        <p class="kpi-label">Avaliações 5 estrelas</p>
+        <p class="kpi-value">${totalGeral.length}</p>
+        <p class="kpi-hint">${periodo.label}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Consultores mencionados</p>
+        <p class="kpi-value">${rank.length}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Total de menções</p>
+        <p class="kpi-value">${dados.length}</p>
+      </div>
+      <div class="kpi">
+        <p class="kpi-label">Líder do período</p>
+        <p class="kpi-value" style="font-size:18px;">${rank[0] ? esc(rank[0].nome) : '—'}</p>
+        <p class="kpi-hint">${rank[0] ? `${rank[0].total} menções` : ''}</p>
+      </div>
+    `;
+    
+    // Pódio (top 3)
+    const podioWrap = document.getElementById('podio-wrap');
+    if (rank.length >= 3) {
+      const p1 = rank[0], p2 = rank[1], p3 = rank[2];
+      podioWrap.innerHTML = `
+        <div class="podium">
+          <div class="podium-card pos-2">
+            <div class="podium-medal pos-2">2</div>
+            <p class="podium-name">${esc(p2.nome)}</p>
+            <p class="podium-loja">${LOJAS[p2.loja] || p2.loja}</p>
+            <div class="podium-total">${p2.total}</div>
+            <div class="podium-total-label">menções</div>
+          </div>
+          <div class="podium-card pos-1">
+            <div class="podium-medal pos-1"><i class="ti ti-crown"></i></div>
+            <p class="podium-name">${esc(p1.nome)}</p>
+            <p class="podium-loja">${LOJAS[p1.loja] || p1.loja}</p>
+            <div class="podium-total">${p1.total}</div>
+            <div class="podium-total-label">menções</div>
+          </div>
+          <div class="podium-card pos-3">
+            <div class="podium-medal pos-3">3</div>
+            <p class="podium-name">${esc(p3.nome)}</p>
+            <p class="podium-loja">${LOJAS[p3.loja] || p3.loja}</p>
+            <div class="podium-total">${p3.total}</div>
+            <div class="podium-total-label">menções</div>
+          </div>
+        </div>
+      `;
+    } else if (rank.length > 0) {
+      podioWrap.innerHTML = `
+        <div class="podium" style="grid-template-columns: repeat(${rank.length}, 1fr);">
+          ${rank.map((r, i) => `
+            <div class="podium-card pos-${i+1}">
+              <div class="podium-medal pos-${i+1}">${i === 0 ? '<i class="ti ti-crown"></i>' : i+1}</div>
+              <p class="podium-name">${esc(r.nome)}</p>
+              <p class="podium-loja">${LOJAS[r.loja] || r.loja}</p>
+              <div class="podium-total">${r.total}</div>
+              <div class="podium-total-label">menções</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    } else {
+      podioWrap.innerHTML = '';
+    }
+    
+    // Ranking completo
+    document.getElementById('rank-info').textContent = `${rank.length} consultor${rank.length !== 1 ? 'es' : ''}`;
+    const listaEl = document.getElementById('ranking-lista');
+    
+    if (!rank.length) {
+      listaEl.innerHTML = `
+        <div class="empty">
+          <i class="ti ti-trophy"></i>
+          <h3>Sem menções neste período</h3>
+          <p>Assim que aparecerem menções, elas serão mostradas aqui.</p>
+        </div>
+      `;
+    } else {
+      listaEl.innerHTML = rank.map((r, i) => {
+        const pos = i + 1;
+        let bg = '';
+        if (pos === 1) bg = 'background:#FFF9E6; color:#B8860B;';
+        else if (pos === 2) bg = 'background:#F5F5F5; color:#555;';
+        else if (pos === 3) bg = 'background:#FDF3EA; color:#8B5A2B;';
+        
+        return `
+          <div class="ranking-item">
+            <div class="ranking-position" style="${bg}">${pos}º</div>
+            <div class="ranking-info">
+              <p class="ranking-name">${esc(r.nome)}</p>
+              <p class="ranking-loja">${LOJAS[r.loja] || r.loja}</p>
+            </div>
+            <div class="ranking-count">
+              ${r.total}
+              <span class="ranking-count-label">menç${r.total !== 1 ? 'ões' : 'ão'}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    document.getElementById('ult-atualiz').textContent = new Date().toLocaleTimeString('pt-BR');
+    
+  } catch (e) {
+    document.getElementById('ranking-lista').innerHTML = `
+      <div class="empty">
+        <i class="ti ti-alert-circle"></i>
+        <h3>Erro ao carregar</h3>
+        <p>${esc(e.message)}</p>
+      </div>
+    `;
+  }
+}
+
+// =====================================================
+// INIT + AUTO-REFRESH
+// =====================================================
+window.addEventListener('DOMContentLoaded', () => {
+  carregar();
+  // Atualiza a cada 60 segundos
+  setInterval(carregar, 60000);
+});
+</script>
+</body>
+</html>
