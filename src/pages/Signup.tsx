@@ -64,10 +64,13 @@ export default function Signup() {
       >
         <Card className="border-0 shadow-lg">
           <CardHeader className="text-center">
-            <div className="mb-2 flex justify-center">
-              <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-primary">
-                <span className="font-serif text-2xl text-primary-foreground">i</span>
-              </div>
+            <div className="mb-2 flex justify-center rounded-xl bg-gradient-primary p-3">
+              <img
+                src="/logo-branco.png"
+                alt="Óticas Idealize"
+                className="h-8 w-auto"
+                onError={(e) => (e.currentTarget.style.display = "none")}
+              />
             </div>
             <CardTitle className="font-serif text-3xl">Criar conta</CardTitle>
             <CardDescription>

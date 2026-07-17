@@ -66,9 +66,12 @@ export default function Login() {
           className="text-center text-primary-foreground"
         >
           <div className="mb-8 flex justify-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-primary-foreground/20 backdrop-blur">
-              <span className="text-4xl font-bold">i</span>
-            </div>
+            <img
+              src="/logo-branco.png"
+              alt="Óticas Idealize"
+              className="h-16 w-auto max-w-[300px]"
+              onError={(e) => (e.currentTarget.style.display = "none")}
+            />
           </div>
           <h1 className="font-serif text-5xl mb-4">Idealize 360º</h1>
           <p className="text-xl text-primary-foreground/80 max-w-md">
@@ -101,10 +104,13 @@ export default function Login() {
         >
           <Card className="border-0 shadow-lg">
             <CardHeader className="text-center">
-              <div className="lg:hidden mb-4 flex justify-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-primary">
-                  <span className="text-2xl font-bold text-primary-foreground">i</span>
-                </div>
+              <div className="lg:hidden mb-4 flex justify-center rounded-xl bg-gradient-primary p-4">
+                <img
+                  src="/logo-branco.png"
+                  alt="Óticas Idealize"
+                  className="h-8 w-auto"
+                  onError={(e) => (e.currentTarget.style.display = "none")}
+                />
               </div>
               <CardTitle className="font-serif text-3xl">Bem-vindo de volta</CardTitle>
               <CardDescription>
