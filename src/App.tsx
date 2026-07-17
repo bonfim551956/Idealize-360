@@ -32,6 +32,8 @@ import EmployeeProfile from "@/pages/people/EmployeeProfile";
 import Ranking from "@/pages/people/Ranking";
 import Evaluations from "@/pages/people/Evaluations";
 import Pdis from "@/pages/people/Pdis";
+import DiscResults from "@/pages/people/DiscResults";
+import DiscTest from "@/pages/DiscTest";
 
 // Academy
 import CoursesList from "@/pages/academy/CoursesList";
@@ -59,6 +61,7 @@ const App = () => (
           <Route path="/careers" element={<PublicJobs />} />
           <Route path="/careers/:id" element={<JobDetails />} />
           <Route path="/careers/:id/apply" element={<ApplyJob />} />
+          <Route path="/disc" element={<DiscTest />} />
 
           {/* Protected Routes — exigem login */}
           <Route element={<ProtectedRoute />}>
@@ -75,6 +78,7 @@ const App = () => (
             <Route path="/people/employees/:id" element={<EmployeeProfile />} />
             <Route path="/people/evaluations" element={<Evaluations />} />
             <Route path="/people/pdis" element={<Pdis />} />
+            <Route path="/people/disc" element={<DiscResults />} />
             <Route path="/people/ranking" element={<Ranking />} />
 
             {/* Academy */}
