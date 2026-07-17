@@ -14,11 +14,17 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { notifications } from "@/lib/mock-data";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { listUnits } from "@/lib/api/units";
 
 export function Header() {
   const unreadCount = notifications.filter((n) => !n.read).length;
   const { profile, user, signOut } = useAuth();
   const navigate = useNavigate();
+
+  const { data: units = [] } = useQuery({ queryKey: ["units"], queryFn: listUnits });
+  const [selectedUnit, setSelectedUnit] = useState<string>("Todas as Unidades");
 
   const displayName = profile?.full_name || user?.email || "Usuário";
   const displayEmail = profile?.email || user?.email || "";
@@ -47,23 +53,25 @@ export function Header() {
 
       {/* Right side */}
       <div className="flex items-center gap-4">
-        {/* Unit selector */}
+        {/* Unit selector — agora com as unidades reais do banco */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="gap-2">
-              <span className="text-sm">Matriz - São Paulo</span>
+              <span className="text-sm">{selectedUnit}</span>
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="max-h-80 w-56 overflow-y-auto">
             <DropdownMenuLabel>Selecionar Unidade</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Todas as Unidades</DropdownMenuItem>
-            <DropdownMenuItem>Matriz - São Paulo</DropdownMenuItem>
-            <DropdownMenuItem>Unidade Campinas</DropdownMenuItem>
-            <DropdownMenuItem>Unidade Ribeirão Preto</DropdownMenuItem>
-            <DropdownMenuItem>Unidade Curitiba</DropdownMenuItem>
-            <DropdownMenuItem>Unidade Belo Horizonte</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSelectedUnit("Todas as Unidades")}>
+              Todas as Unidades
+            </DropdownMenuItem>
+            {units.map((unit) => (
+              <DropdownMenuItem key={unit.id} onClick={() => setSelectedUnit(unit.name)}>
+                {unit.name}
+              </DropdownMenuItem>
+            ))}
           </DropdownMenuContent>
         </DropdownMenu>
 

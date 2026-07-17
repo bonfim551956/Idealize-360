@@ -90,14 +90,24 @@ export function Sidebar() {
     <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-sidebar text-sidebar-foreground">
       <div className="flex h-full flex-col">
         {/* Logo */}
-        <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-6">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-primary">
-            <span className="text-lg font-bold text-primary-foreground">i</span>
-          </div>
-          <div>
+        <div className="flex h-16 items-center gap-3 border-b border-sidebar-border px-5">
+          <img
+            src="/logo-branco.png"
+            alt="Óticas Idealize"
+            className="h-9 w-auto"
+            onError={(e) => {
+              // Se o arquivo do logo ainda não foi enviado, mostra o texto.
+              e.currentTarget.style.display = "none";
+              e.currentTarget.nextElementSibling?.classList.remove("hidden");
+            }}
+          />
+          <div className="hidden">
             <h1 className="text-lg font-semibold text-sidebar-foreground">Idealize</h1>
             <p className="text-xs text-sidebar-foreground/60">360º Platform</p>
           </div>
+          <span className="ml-auto rounded-full bg-sidebar-accent px-2 py-0.5 text-[10px] font-bold text-sidebar-foreground/80">
+            360º
+          </span>
         </div>
 
         {/* Navigation */}
