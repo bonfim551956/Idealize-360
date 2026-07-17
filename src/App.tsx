@@ -13,8 +13,10 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 
 // Pages
 import Login from "@/pages/Login";
+import Signup from "@/pages/Signup";
 import Dashboard from "@/pages/Dashboard";
 import NotFound from "@/pages/NotFound";
+import Users from "@/pages/settings/Users";
 
 // Talents
 import PublicJobs from "@/pages/talents/PublicJobs";
@@ -53,6 +55,7 @@ const App = () => (
           {/* Public Routes */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/careers" element={<PublicJobs />} />
           <Route path="/careers/:id" element={<JobDetails />} />
           <Route path="/careers/:id/apply" element={<ApplyJob />} />
@@ -85,6 +88,11 @@ const App = () => (
 
             {/* Settings */}
             <Route path="/settings" element={<Settings />} />
+
+            {/* Usuários — apenas admin/RH */}
+            <Route element={<ProtectedRoute allow={["admin", "rh"]} />}>
+              <Route path="/settings/users" element={<Users />} />
+            </Route>
           </Route>
           </Route>
 
