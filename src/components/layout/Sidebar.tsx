@@ -42,6 +42,7 @@ const navigation = [
       { name: "Colaboradores", href: "/people/employees" },
       { name: "Avaliações", href: "/people/evaluations" },
       { name: "PDIs", href: "/people/pdis" },
+      { name: "Teste DISC", href: "/people/disc" },
       { name: "Ranking", href: "/people/ranking" },
     ],
   },
