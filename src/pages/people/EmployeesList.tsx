@@ -14,6 +14,7 @@ import {
   Edit,
   Trash2,
   Calendar,
+  KeyRound,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,6 +63,7 @@ import { listUnits } from "@/lib/api/units";
 import { listRoles } from "@/lib/api/roles";
 import { EmployeeFormDialog } from "@/components/people/EmployeeFormDialog";
 import { AgendaDialog } from "@/components/people/AgendaDialog";
+import { CreateLoginDialog } from "@/components/people/CreateLoginDialog";
 import { useUnitFilter } from "@/contexts/UnitFilterContext";
 
 export default function EmployeesList() {
@@ -72,6 +74,7 @@ export default function EmployeesList() {
   const [editing, setEditing] = useState<Employee | null>(null);
   const [deleting, setDeleting] = useState<Employee | null>(null);
   const [agendaFor, setAgendaFor] = useState<Employee | null>(null);
+  const [loginFor, setLoginFor] = useState<Employee | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -242,6 +245,15 @@ export default function EmployeesList() {
                           <p className="text-sm text-muted-foreground">
                             {employee.email}
                           </p>
+                          {employee.profileId ? (
+                            <Badge variant="outline" className="mt-1 gap-1 border-success/40 text-success">
+                              <KeyRound className="h-3 w-3" /> Com acesso
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="mt-1 gap-1 text-muted-foreground">
+                              Sem acesso
+                            </Badge>
+                          )}
                         </div>
                       </div>
                     </TableCell>
@@ -304,6 +316,12 @@ export default function EmployeesList() {
                             <Calendar className="mr-2 h-4 w-4" />
                             Agenda de eventos
                           </DropdownMenuItem>
+                          {!employee.profileId && (
+                            <DropdownMenuItem onClick={() => setLoginFor(employee)}>
+                              <KeyRound className="mr-2 h-4 w-4" />
+                              Criar acesso (login)
+                            </DropdownMenuItem>
+                          )}
                           <DropdownMenuItem asChild>
                             <Link to="/people/evaluations">
                               <TrendingUp className="mr-2 h-4 w-4" />
@@ -341,6 +359,13 @@ export default function EmployeesList() {
         onOpenChange={(o) => !o && setAgendaFor(null)}
         employeeId={agendaFor?.id ?? null}
         employeeName={agendaFor?.name ?? ""}
+      />
+
+      <CreateLoginDialog
+        open={!!loginFor}
+        onOpenChange={(o) => !o && setLoginFor(null)}
+        employee={loginFor}
+        onSaved={refresh}
       />
 
       <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
