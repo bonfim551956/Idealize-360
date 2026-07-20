@@ -27,9 +27,10 @@ export function ProtectedRoute({ allow }: ProtectedRouteProps) {
     return <Navigate to="/login" replace />;
   }
 
-  // Logado, mas sem o nível de acesso exigido → volta ao dashboard.
+  // Logado, mas sem o nível de acesso exigido → vai para a Minha Jornada
+  // (página acessível a todos os níveis).
   if (allow && profile && !allow.includes(profile.access_level)) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/jornada" replace />;
   }
 
   return <Outlet />;
