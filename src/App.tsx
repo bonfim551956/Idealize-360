@@ -41,6 +41,7 @@ import DiscTest from "@/pages/DiscTest";
 // Academy
 import CoursesList from "@/pages/academy/CoursesList";
 import CoursePlayer from "@/pages/academy/CoursePlayer";
+import CourseContent from "@/pages/academy/CourseContent";
 import Certificates from "@/pages/academy/Certificates";
 
 // Units & Settings
@@ -90,6 +91,7 @@ const App = () => (
               <Route path="/people/evaluations" element={<Evaluations />} />
               <Route path="/people/pdis" element={<Pdis />} />
               <Route path="/people/disc" element={<DiscResults />} />
+              <Route path="/academy/courses/:id/conteudo" element={<CourseContent />} />
               <Route path="/units" element={<UnitsList />} />
             </Route>
 

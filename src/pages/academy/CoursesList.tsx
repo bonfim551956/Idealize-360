@@ -13,6 +13,7 @@ import {
   MoreVertical,
   Edit,
   Trash2,
+  Layers,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,6 +47,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { listCourses, deleteCourse, type Course } from "@/lib/api/courses";
 import { CourseFormDialog } from "@/components/academy/CourseFormDialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { MANAGERS, hasAccess } from "@/lib/permissions";
 
 const pillars = ["Todos", "Onboarding", "Vendas", "Técnico", "Cultura"];
 
@@ -58,6 +61,8 @@ export default function CoursesList() {
   const [deleting, setDeleting] = useState<Course | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const { profile } = useAuth();
+  const canManage = hasAccess(profile?.access_level, MANAGERS);
 
   const { data: courses = [], isLoading } = useQuery({
     queryKey: ["courses"],
@@ -117,10 +122,12 @@ export default function CoursesList() {
             <CheckCircle className="h-4 w-4 text-success" />
             {completedCount} completos
           </Badge>
-          <Button className="gap-2" onClick={openNew}>
-            <Plus className="h-4 w-4" />
-            Novo curso
-          </Button>
+          {canManage && (
+            <Button className="gap-2" onClick={openNew}>
+              <Plus className="h-4 w-4" />
+              Novo curso
+            </Button>
+          )}
         </div>
       </div>
 
@@ -215,26 +222,34 @@ export default function CoursesList() {
                     <Badge variant="outline">{course.pillar}</Badge>
                     <Badge variant="secondary">{course.role}</Badge>
                   </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-7 w-7 -mr-1">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => openEdit(course)}>
-                        <Edit className="mr-2 h-4 w-4" />
-                        Editar
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="text-destructive"
-                        onClick={() => setDeleting(course)}
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Excluir
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  {canManage && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 -mr-1">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem asChild>
+                          <Link to={`/academy/courses/${course.id}/conteudo`}>
+                            <Layers className="mr-2 h-4 w-4" />
+                            Gerenciar conteúdo
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEdit(course)}>
+                          <Edit className="mr-2 h-4 w-4" />
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onClick={() => setDeleting(course)}
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Excluir
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
                 <h3 className="text-lg font-semibold">{course.title}</h3>
                 <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
