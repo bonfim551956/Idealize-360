@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { UnitFilterProvider } from "@/contexts/UnitFilterContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { MANAGERS } from "@/lib/permissions";
 
 // Layouts
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
@@ -69,33 +70,28 @@ const App = () => (
           {/* Protected Routes — exigem login */}
           <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            {/* Acessível a todos os níveis */}
             <Route path="/jornada" element={<Jornada />} />
-            
-            {/* Talents */}
-            <Route path="/talents/jobs" element={<JobsList />} />
-            <Route path="/talents/candidates" element={<CandidatesList />} />
-            <Route path="/talents/pipeline" element={<Pipeline />} />
-            
-            {/* People */}
-            <Route path="/people/employees" element={<EmployeesList />} />
-            <Route path="/people/employees/:id" element={<EmployeeProfile />} />
-            <Route path="/people/evaluations" element={<Evaluations />} />
-            <Route path="/people/pdis" element={<Pdis />} />
-            <Route path="/people/disc" element={<DiscResults />} />
             <Route path="/people/ranking" element={<Ranking />} />
-
-            {/* Academy */}
             <Route path="/academy/courses" element={<CoursesList />} />
             <Route path="/academy/courses/:id" element={<CoursePlayer />} />
             <Route path="/academy/progress" element={<CoursesList />} />
             <Route path="/academy/certificates" element={<Certificates />} />
-
-            {/* Units */}
-            <Route path="/units" element={<UnitsList />} />
-
-            {/* Settings */}
             <Route path="/settings" element={<Settings />} />
+
+            {/* Somente gestão (admin, RH, gestor) */}
+            <Route element={<ProtectedRoute allow={MANAGERS} />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/talents/jobs" element={<JobsList />} />
+              <Route path="/talents/candidates" element={<CandidatesList />} />
+              <Route path="/talents/pipeline" element={<Pipeline />} />
+              <Route path="/people/employees" element={<EmployeesList />} />
+              <Route path="/people/employees/:id" element={<EmployeeProfile />} />
+              <Route path="/people/evaluations" element={<Evaluations />} />
+              <Route path="/people/pdis" element={<Pdis />} />
+              <Route path="/people/disc" element={<DiscResults />} />
+              <Route path="/units" element={<UnitsList />} />
+            </Route>
 
             {/* Usuários — apenas admin/RH */}
             <Route element={<ProtectedRoute allow={["admin", "rh"]} />}>
