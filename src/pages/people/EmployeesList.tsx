@@ -13,6 +13,7 @@ import {
   Plus,
   Edit,
   Trash2,
+  Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,6 +61,8 @@ import { listEmployees, deleteEmployee, type Employee } from "@/lib/api/employee
 import { listUnits } from "@/lib/api/units";
 import { listRoles } from "@/lib/api/roles";
 import { EmployeeFormDialog } from "@/components/people/EmployeeFormDialog";
+import { AgendaDialog } from "@/components/people/AgendaDialog";
+import { useUnitFilter } from "@/contexts/UnitFilterContext";
 
 export default function EmployeesList() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -68,6 +71,7 @@ export default function EmployeesList() {
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Employee | null>(null);
   const [deleting, setDeleting] = useState<Employee | null>(null);
+  const [agendaFor, setAgendaFor] = useState<Employee | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -99,6 +103,8 @@ export default function EmployeesList() {
     }
   }
 
+  const { unitId: globalUnitId } = useUnitFilter();
+
   const filteredEmployees = employees.filter((employee) => {
     const matchesSearch =
       employee.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -107,7 +113,8 @@ export default function EmployeesList() {
       unitFilter === "all" || employee.unit?.id === unitFilter;
     const matchesRole =
       roleFilter === "all" || employee.role?.id === roleFilter;
-    return matchesSearch && matchesUnit && matchesRole;
+    const matchesGlobalUnit = !globalUnitId || employee.unit?.id === globalUnitId;
+    return matchesSearch && matchesUnit && matchesRole && matchesGlobalUnit;
   });
 
   const getLevelInfo = (level: string) => {
@@ -293,6 +300,10 @@ export default function EmployeesList() {
                             <Edit className="mr-2 h-4 w-4" />
                             Editar
                           </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setAgendaFor(employee)}>
+                            <Calendar className="mr-2 h-4 w-4" />
+                            Agenda de eventos
+                          </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <Link to="/people/evaluations">
                               <TrendingUp className="mr-2 h-4 w-4" />
@@ -323,6 +334,13 @@ export default function EmployeesList() {
         onOpenChange={setFormOpen}
         employee={editing}
         onSaved={refresh}
+      />
+
+      <AgendaDialog
+        open={!!agendaFor}
+        onOpenChange={(o) => !o && setAgendaFor(null)}
+        employeeId={agendaFor?.id ?? null}
+        employeeName={agendaFor?.name ?? ""}
       />
 
       <AlertDialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>

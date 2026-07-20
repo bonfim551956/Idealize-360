@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Auth
 import { AuthProvider } from "@/contexts/AuthContext";
+import { UnitFilterProvider } from "@/contexts/UnitFilterContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // Layouts
@@ -15,6 +16,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import Dashboard from "@/pages/Dashboard";
+import Jornada from "@/pages/Jornada";
 import NotFound from "@/pages/NotFound";
 import Users from "@/pages/settings/Users";
 
@@ -49,6 +51,7 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
+    <UnitFilterProvider>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -67,6 +70,7 @@ const App = () => (
           <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/jornada" element={<Jornada />} />
             
             {/* Talents */}
             <Route path="/talents/jobs" element={<JobsList />} />
@@ -105,6 +109,7 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
+    </UnitFilterProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

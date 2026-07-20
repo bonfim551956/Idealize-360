@@ -46,6 +46,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { listJobs, deleteJob, type Job } from "@/lib/api/jobs";
 import { JobFormDialog } from "@/components/talents/JobFormDialog";
+import { useUnitFilter } from "@/contexts/UnitFilterContext";
 
 export default function JobsList() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -89,11 +90,15 @@ export default function JobsList() {
     }
   };
 
-  const filteredJobs = jobs.filter(
-    (job) =>
+  const { unitId: globalUnitId } = useUnitFilter();
+
+  const filteredJobs = jobs.filter((job) => {
+    const matchesSearch =
       job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (job.unit?.name ?? "").toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      (job.unit?.name ?? "").toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesUnit = !globalUnitId || job.unit?.id === globalUnitId;
+    return matchesSearch && matchesUnit;
+  });
 
   const openJobs = jobs.filter((j) => j.status === "open").length;
   const totalApplications = jobs.reduce((acc, j) => acc + j.applications, 0);

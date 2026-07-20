@@ -20,6 +20,7 @@ import { listCandidates } from "@/lib/api/candidates";
 import { listCourses } from "@/lib/api/courses";
 import { listJobs } from "@/lib/api/jobs";
 import { listUnits } from "@/lib/api/units";
+import { useUnitFilter } from "@/contexts/UnitFilterContext";
 
 const container = {
   hidden: { opacity: 0 },
@@ -37,11 +38,17 @@ const item = {
 };
 
 export default function Dashboard() {
-  const { data: employees = [] } = useQuery({ queryKey: ["employees"], queryFn: listEmployees });
-  const { data: candidates = [] } = useQuery({ queryKey: ["candidates"], queryFn: listCandidates });
+  const { unitId } = useUnitFilter();
+  const { data: employeesRaw = [] } = useQuery({ queryKey: ["employees"], queryFn: listEmployees });
+  const { data: candidatesRaw = [] } = useQuery({ queryKey: ["candidates"], queryFn: listCandidates });
   const { data: courses = [] } = useQuery({ queryKey: ["courses"], queryFn: listCourses });
-  const { data: jobs = [] } = useQuery({ queryKey: ["jobs"], queryFn: listJobs });
+  const { data: jobsRaw = [] } = useQuery({ queryKey: ["jobs"], queryFn: listJobs });
   const { data: units = [] } = useQuery({ queryKey: ["units"], queryFn: listUnits });
+
+  // Aplica o filtro global de unidade
+  const employees = unitId ? employeesRaw.filter((e) => e.unit?.id === unitId) : employeesRaw;
+  const candidates = unitId ? candidatesRaw.filter((c) => c.unitId === unitId) : candidatesRaw;
+  const jobs = unitId ? jobsRaw.filter((j) => j.unit?.id === unitId) : jobsRaw;
 
   const totalEmployees = employees.length;
   const totalCandidates = candidates.length;

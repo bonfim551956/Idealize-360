@@ -43,6 +43,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { candidateStatuses, discProfiles } from "@/lib/mock-data";
 import { listCandidates } from "@/lib/api/candidates";
 import { listUnits } from "@/lib/api/units";
+import { useUnitFilter } from "@/contexts/UnitFilterContext";
 
 const statusColors: Record<string, string> = {
   new: "bg-info/10 text-info",
@@ -66,6 +67,8 @@ export default function CandidatesList() {
     queryFn: listUnits,
   });
 
+  const { unitId: globalUnitId } = useUnitFilter();
+
   const filteredCandidates = candidates.filter((candidate) => {
     const matchesSearch =
       candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -74,7 +77,8 @@ export default function CandidatesList() {
       statusFilter === "all" || candidate.status === statusFilter;
     const matchesUnit =
       unitFilter === "all" || candidate.unitId === unitFilter;
-    return matchesSearch && matchesStatus && matchesUnit;
+    const matchesGlobalUnit = !globalUnitId || candidate.unitId === globalUnitId;
+    return matchesSearch && matchesStatus && matchesUnit && matchesGlobalUnit;
   });
 
   const getStatusLabel = (status: string) => {
