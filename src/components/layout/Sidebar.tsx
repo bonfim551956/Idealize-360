@@ -17,12 +17,15 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { MANAGERS, hasAccess } from "@/lib/permissions";
+import type { NivelAcesso } from "@/contexts/AuthContext";
 
 const navigation = [
   {
     name: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
+    allow: MANAGERS,
   },
   {
     name: "Minha Jornada",
@@ -33,10 +36,11 @@ const navigation = [
     name: "Banco de Talentos",
     icon: Briefcase,
     color: "text-pillar-talents",
+    allow: MANAGERS,
     children: [
-      { name: "Vagas", href: "/talents/jobs" },
-      { name: "Candidatos", href: "/talents/candidates" },
-      { name: "Pipeline", href: "/talents/pipeline" },
+      { name: "Vagas", href: "/talents/jobs", allow: MANAGERS },
+      { name: "Candidatos", href: "/talents/candidates", allow: MANAGERS },
+      { name: "Pipeline", href: "/talents/pipeline", allow: MANAGERS },
     ],
   },
   {
@@ -44,10 +48,10 @@ const navigation = [
     icon: Users,
     color: "text-pillar-people",
     children: [
-      { name: "Colaboradores", href: "/people/employees" },
-      { name: "Avaliações", href: "/people/evaluations" },
-      { name: "PDIs", href: "/people/pdis" },
-      { name: "Teste DISC", href: "/people/disc" },
+      { name: "Colaboradores", href: "/people/employees", allow: MANAGERS },
+      { name: "Avaliações", href: "/people/evaluations", allow: MANAGERS },
+      { name: "PDIs", href: "/people/pdis", allow: MANAGERS },
+      { name: "Teste DISC", href: "/people/disc", allow: MANAGERS },
       { name: "Ranking", href: "/people/ranking" },
     ],
   },
@@ -65,6 +69,7 @@ const navigation = [
     name: "Unidades",
     href: "/units",
     icon: Building2,
+    allow: MANAGERS,
   },
 ];
 
@@ -72,8 +77,25 @@ export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { profile, signOut } = useAuth();
-  const canManageUsers =
-    profile?.access_level === "admin" || profile?.access_level === "rh";
+  const level = profile?.access_level as NivelAcesso | undefined;
+  const canManageUsers = level === "admin" || level === "rh";
+
+  // Filtra o menu conforme o nível de acesso
+  const visibleNav = navigation
+    .map((item) => {
+      if ("children" in item && item.children) {
+        const children = item.children.filter((c) =>
+          hasAccess(level, (c as { allow?: NivelAcesso[] }).allow)
+        );
+        return { ...item, children };
+      }
+      return item;
+    })
+    .filter((item) => {
+      if ("children" in item && item.children) return item.children.length > 0;
+      return hasAccess(level, (item as { allow?: NivelAcesso[] }).allow);
+    });
+
   const [expandedItems, setExpandedItems] = useState<string[]>(["Banco de Talentos", "Pessoas & Cultura", "Academy"]);
 
   const handleLogout = async () => {
@@ -117,7 +139,7 @@ export function Sidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-          {navigation.map((item) => (
+          {visibleNav.map((item) => (
             <div key={item.name}>
               {item.children ? (
                 <>
