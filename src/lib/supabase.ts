@@ -23,3 +23,16 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: true,
   },
 });
+
+// Cliente secundário e descartável para o admin CRIAR outro usuário
+// sem afetar a própria sessão (não persiste sessão nem faz refresh).
+export function makeSignupClient() {
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      detectSessionInUrl: false,
+      storageKey: "idz-admin-signup",
+    },
+  });
+}

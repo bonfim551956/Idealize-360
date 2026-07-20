@@ -25,6 +25,11 @@ const navigation = [
     icon: LayoutDashboard,
   },
   {
+    name: "Minha Jornada",
+    href: "/jornada",
+    icon: TrendingUp,
+  },
+  {
     name: "Banco de Talentos",
     icon: Briefcase,
     color: "text-pillar-talents",

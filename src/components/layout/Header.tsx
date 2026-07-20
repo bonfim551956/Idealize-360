@@ -15,8 +15,8 @@ import { notifications } from "@/lib/mock-data";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import { listUnits } from "@/lib/api/units";
+import { useUnitFilter } from "@/contexts/UnitFilterContext";
 
 export function Header() {
   const unreadCount = notifications.filter((n) => !n.read).length;
@@ -24,7 +24,7 @@ export function Header() {
   const navigate = useNavigate();
 
   const { data: units = [] } = useQuery({ queryKey: ["units"], queryFn: listUnits });
-  const [selectedUnit, setSelectedUnit] = useState<string>("Todas as Unidades");
+  const { unitName, setUnit } = useUnitFilter();
 
   const displayName = profile?.full_name || user?.email || "Usuário";
   const displayEmail = profile?.email || user?.email || "";
@@ -57,18 +57,18 @@ export function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="gap-2">
-              <span className="text-sm">{selectedUnit}</span>
+              <span className="text-sm">{unitName}</span>
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="max-h-80 w-56 overflow-y-auto">
             <DropdownMenuLabel>Selecionar Unidade</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setSelectedUnit("Todas as Unidades")}>
+            <DropdownMenuItem onClick={() => setUnit(null, "Todas as Unidades")}>
               Todas as Unidades
             </DropdownMenuItem>
             {units.map((unit) => (
-              <DropdownMenuItem key={unit.id} onClick={() => setSelectedUnit(unit.name)}>
+              <DropdownMenuItem key={unit.id} onClick={() => setUnit(unit.id, unit.name)}>
                 {unit.name}
               </DropdownMenuItem>
             ))}
